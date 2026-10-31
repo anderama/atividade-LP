@@ -1,0 +1,896 @@
+/* ==========================================================================
+   CineCrítica: regras visuais
+   Tema escuro de sala de cinema. Vermelho = ação. Dourado = ranking e prêmio.
+   ========================================================================== */
+
+/* ---------- Tokens ---------- */
+:root {
+  --ink-950: #0c0a0b;
+  --ink-900: #141012;
+  --ink-850: #1a1517;
+  --ink-800: #221b1e;
+  --line: rgb(255 236 220 / 0.1);
+  --line-strong: rgb(255 236 220 / 0.18);
+
+  --text: #f4ede4;
+  --text-muted: #aea397;
+  --text-faint: #8a7f75;
+
+  --red: #c3122d;
+  --red-hover: #d81b38;
+  --red-press: #a50e25;
+  --red-velvet: #4a0912;
+  --red-velvet-lit: #6b0f1c;
+
+  --gold: #e3b94e;
+  --gold-soft: rgb(227 185 78 / 0.14);
+
+  --screen-light: #fff4e2;
+
+  --radius: 4px;
+  --header-h: 68px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font: "Archivo", system-ui, sans-serif;
+}
+
+/* Bootstrap no tema escuro, com os tokens da casa */
+[data-bs-theme="dark"] {
+  --bs-body-bg: var(--ink-950);
+  --bs-body-color: var(--text);
+  --bs-body-font-family: var(--font);
+  --bs-body-font-size: 1rem;
+  --bs-body-line-height: 1.6;
+  --bs-secondary-color: var(--text-muted);
+  --bs-border-color: var(--line);
+  --bs-link-color: var(--text);
+  --bs-link-color-rgb: 244, 237, 228;
+  --bs-link-hover-color: var(--gold);
+  --bs-link-hover-color-rgb: 227, 185, 78;
+  --bs-border-radius: var(--radius);
+  --bs-focus-ring-color: rgb(227 185 78 / 0.45);
+  --bs-form-invalid-color: #ff8a98;
+  --bs-form-invalid-border-color: #ff6b7e;
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  color-scheme: dark;
+  scrollbar-color: var(--ink-800) var(--ink-950);
+}
+
+body {
+  background: var(--ink-950);
+  color: var(--text);
+  font-family: var(--font);
+  font-variation-settings: normal;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  caret-color: var(--gold);
+}
+
+::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font);
+  text-wrap: balance;
+  color: var(--text);
+}
+
+p { text-wrap: pretty; }
+
+a {
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  z-index: 1100;
+  padding: 10px 16px;
+  background: var(--gold);
+  color: var(--ink-950);
+  font-weight: 700;
+  border-radius: var(--radius);
+  text-decoration: none;
+}
+.skip-link:focus { top: 12px; }
+
+/* ---------- Logotipo tipográfico ---------- */
+.wordmark {
+  font-family: var(--font);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+  line-height: 1;
+}
+.wordmark span {
+  color: var(--gold);
+  font-style: italic;
+  font-weight: 700;
+}
+.wordmark:hover { color: var(--text); }
+
+/* ---------- Header fixo ---------- */
+.site-header {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  background: transparent;
+  transition: background-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+.site-header.is-solid {
+  background: rgb(12 10 11 / 0.86);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 1px 0 var(--line);
+}
+.site-header .navbar { width: 100%; padding: 0; }
+
+.navbar-toggler {
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  font-size: 1.4rem;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+}
+.navbar-toggler:focus { box-shadow: none; }
+
+.nav-link {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  padding: 8px 14px !important;
+  transition: color 0.2s ease;
+}
+.nav-link:hover,
+.nav-link[aria-current="true"] { color: var(--text); }
+
+.nav-link.nav-cta {
+  margin-left: 8px;
+  color: #fff;
+  background: var(--red);
+  border-radius: var(--radius);
+  font-weight: 600;
+  transition: background-color 0.2s ease, scale 0.12s ease;
+}
+.nav-link.nav-cta:hover { background: var(--red-hover); color: #fff; }
+.nav-link.nav-cta:active { scale: 0.96; }
+
+/* ---------- Botão principal ---------- */
+.btn-cine {
+  --bs-btn-padding-x: 1.4rem;
+  --bs-btn-padding-y: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: var(--red);
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius);
+  font-weight: 650;
+  font-size: 1rem;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  box-shadow: 0 8px 18px -10px rgb(0 0 0 / 0.8);
+  transition: background-color 0.2s ease, scale 0.12s ease, box-shadow 0.2s ease;
+}
+.btn-cine:hover,
+.btn-cine:focus-visible {
+  background: var(--red-hover);
+  color: #fff;
+}
+.btn-cine:active {
+  background: var(--red-press) !important;
+  color: #fff !important;
+  scale: 0.96;
+}
+.btn-cine .ph-play { font-size: 1.05em; }
+.btn-cine:disabled,
+.btn-cine[aria-busy="true"] {
+  background: var(--red-press);
+  color: rgb(255 255 255 / 0.85);
+  opacity: 1;
+  cursor: progress;
+}
+
+/* ==========================================================================
+   HERO: a sala de cinema
+   ========================================================================== */
+.hero {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(var(--header-h) + 20px);
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgb(255 236 210 / 0.07), transparent 60%),
+    var(--ink-950);
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* A tela */
+/* 2.39:1 sempre: em telas baixas a tela estreita em vez de achatar */
+.screen {
+  margin: 0 auto;
+  position: relative;
+  width: min(100%, calc(46dvh * 2.39));
+}
+
+.screen-frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 2.39 / 1;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #050404;
+  outline: 1px solid rgb(255 255 255 / 0.1);
+  outline-offset: -1px;
+  box-shadow:
+    0 0 0 10px #070606,
+    0 30px 90px -20px rgb(255 228 190 / 0.18);
+}
+
+.screen-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  filter: saturate(1.05) contrast(1.04);
+}
+
+/* Vinheta de projeção */
+.screen-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 120% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.55));
+  pointer-events: none;
+}
+
+.screen-play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.screen-play i {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: rgb(12 10 11 / 0.62);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 1.8rem;
+  padding-left: 4px; /* alinhamento óptico do triângulo */
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.2);
+}
+.screen-frame:hover .screen-play { opacity: 1; }
+
+.screen-caption {
+  margin-top: 18px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+.screen-caption strong { color: var(--text); font-weight: 600; }
+
+/* Feixe do projetor, vindo de trás da plateia */
+.hero-beam {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: conic-gradient(from -42deg at 50% 108%, transparent 0deg, rgb(255 240 215 / 0.11) 24deg 60deg, transparent 84deg);
+  -webkit-mask-image: linear-gradient(to top, transparent 4%, #000 34%, #000 62%, transparent 88%);
+  mask-image: linear-gradient(to top, transparent 4%, #000 34%, #000 62%, transparent 88%);
+  mix-blend-mode: screen;
+}
+
+/* Texto do hero */
+.hero-copy {
+  margin-top: clamp(24px, 4vh, 44px);
+  position: relative;
+  z-index: 3;
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 1.2rem + 3.6vw, 4.6rem);
+  font-weight: 800;
+  font-stretch: 108%;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+.hero-title span {
+  color: var(--text);
+  font-style: italic;
+  font-weight: 700;
+  display: inline-block;
+  padding-bottom: 0.06em;
+}
+
+.hero-lead {
+  color: var(--text-muted);
+  font-size: 1.075rem;
+  line-height: 1.55;
+  max-width: 36ch;
+  margin-bottom: 22px;
+}
+
+/* Fileiras de poltronas vermelhas */
+.seats {
+  position: relative;
+  z-index: 2;
+  height: clamp(84px, 13vh, 130px);
+  margin-top: clamp(20px, 3vh, 36px);
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 30px 40px at 50% 100%, var(--red-velvet) 96%, transparent 100%) 0 100% / 78px 52px repeat-x,
+    radial-gradient(ellipse 25px 33px at 50% 100%, var(--red-velvet-lit) 96%, transparent 100%) 39px calc(100% - 34px) / 66px 44px repeat-x,
+    radial-gradient(ellipse 21px 27px at 50% 100%, #3a0810 96%, transparent 100%) 6px calc(100% - 62px) / 56px 36px repeat-x;
+}
+.seats::before {
+  /* luz da tela batendo no topo das poltronas, escurecendo para a frente */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgb(12 10 11 / 0) 0%, rgb(12 10 11 / 0.15) 40%, rgb(12 10 11 / 0.75) 100%);
+}
+
+/* ==========================================================================
+   DESTAQUES
+   ========================================================================== */
+.destaques {
+  padding: clamp(80px, 10vw, 140px) 0 clamp(72px, 9vw, 120px);
+  background: var(--ink-950);
+}
+
+.section-head { margin-bottom: clamp(40px, 5vw, 64px); }
+
+.section-title {
+  font-size: clamp(2rem, 1.2rem + 2.4vw, 3.25rem);
+  font-weight: 800;
+  font-stretch: 108%;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  margin-bottom: 16px;
+}
+
+.section-lead {
+  color: var(--text-muted);
+  font-size: 1.075rem;
+  max-width: 52ch;
+  margin: 0;
+}
+
+.col-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-stretch: 112%;
+  color: var(--text);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+/* ---------- RF03, coluna 1: lista ordenada ---------- */
+.top5 {
+  list-style: none;
+  counter-reset: rank;
+  margin: 0;
+  padding: 0;
+}
+
+.film {
+  counter-increment: rank;
+  position: relative;
+  display: grid;
+  grid-template-columns: 6.25rem minmax(0, 1fr) auto;
+  gap: 4px 24px;
+  align-items: start;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+  transition: opacity 0.3s var(--ease-out);
+}
+
+/* Numeral de ranking: a lombada da estante, dourado e condensado */
+.film::before {
+  content: counter(rank);
+  align-self: stretch;
+  font-stretch: 62%;
+  font-weight: 900;
+  font-size: 9rem;
+  line-height: 0.78;
+  margin-top: -0.04em;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  transition: color 0.3s var(--ease-out);
+}
+
+/* Foco: um filme por vez, o resto escurece */
+.top5:has(.film:focus-within) .film:not(:focus-within) {
+  opacity: 0.38;
+}
+@media (hover: hover) {
+  .top5:has(.film:hover) .film:not(:hover) { opacity: 0.38; }
+}
+
+.film-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-stretch: 104%;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  margin: 2px 0 4px;
+}
+.film-meta {
+  font-size: 0.875rem;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+.film-note {
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  max-width: 52ch;
+}
+.film-award {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+.film-award i { font-size: 1rem; }
+
+.film-trailer {
+  position: relative;
+  display: block;
+  width: 168px;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  margin-top: 4px;
+}
+.film-trailer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(0.55) brightness(0.8);
+  transition: filter 0.3s var(--ease-out), scale 0.4s var(--ease-out);
+}
+.film-trailer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  outline: 1px solid rgb(255 255 255 / 0.1);
+  outline-offset: -1px;
+  pointer-events: none;
+}
+.film-trailer-label {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px 4px 7px;
+  border-radius: var(--radius);
+  background: rgb(12 10 11 / 0.78);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+.film:hover .film-trailer img,
+.film-trailer:focus-visible img {
+  filter: none;
+  scale: 1.04;
+}
+.film-trailer:hover .film-trailer-label,
+.film-trailer:focus-visible .film-trailer-label { background: var(--red); }
+
+/* ---------- RF03, coluna 2: lista não ordenada ---------- */
+.bastidores {
+  position: relative;
+  background: var(--ink-900);
+  border-radius: var(--radius);
+  padding: 28px 28px 12px;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 24px 60px -30px rgb(0 0 0 / 0.8);
+}
+/* faixa de perfuração de película no topo */
+.bastidores::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 10px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 10px, var(--ink-950) 10px 18px) center / 100% 4px no-repeat,
+    var(--red-velvet);
+}
+.bastidores .col-title { margin-top: 6px; }
+
+.bastidores-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.bastidores-list li {
+  position: relative;
+  padding: 0 0 18px 22px;
+  margin-bottom: 18px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  border-bottom: 1px solid var(--line);
+}
+.bastidores-list li:last-child { border-bottom: 0; margin-bottom: 0; }
+/* marcador: furo de película */
+.bastidores-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 9px;
+  height: 7px;
+  border-radius: 1.5px;
+  background: var(--red-velvet-lit);
+}
+.bastidor-film {
+  display: block;
+  font-weight: 700;
+  font-stretch: 104%;
+  color: var(--text);
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+/* ==========================================================================
+   ASSINE: o ingresso
+   ========================================================================== */
+.assine {
+  position: relative;
+  padding: clamp(80px, 10vw, 140px) 0;
+  background: var(--ink-950);
+}
+
+.ticket {
+  --stub: 150px;
+  --notch: 14px;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--stub);
+  background: var(--ink-850);
+  border-radius: 10px;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 40px 80px -40px rgb(0 0 0 / 0.9);
+  /* recortes da picotagem entre corpo e canhoto */
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at calc(100% - var(--stub)) 0, #0000 98%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle var(--notch) at calc(100% - var(--stub)) 100%, #0000 98%, #000) bottom / 100% 51% no-repeat;
+  mask:
+    radial-gradient(circle var(--notch) at calc(100% - var(--stub)) 0, #0000 98%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle var(--notch) at calc(100% - var(--stub)) 100%, #0000 98%, #000) bottom / 100% 51% no-repeat;
+}
+
+.ticket-main {
+  padding: clamp(24px, 4vw, 40px);
+}
+
+.ticket-stub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: var(--red);
+  color: #fff;
+  text-align: center;
+  padding: 24px 12px;
+  border-radius: 0 10px 10px 0;
+}
+.ticket-stub::before {
+  /* linha picotada */
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(var(--notch) + 6px);
+  bottom: calc(var(--notch) + 6px);
+  border-left: 2px dashed rgb(12 10 11 / 0.55);
+}
+.stub-small {
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-stretch: 118%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.stub-number {
+  font-size: 5.5rem;
+  font-weight: 900;
+  font-stretch: 62%;
+  line-height: 0.9;
+  color: var(--gold);
+}
+
+/* Campos */
+.field { margin-bottom: 20px; }
+
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.form-control {
+  background: var(--ink-950);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 0.8rem 0.95rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.form-control:hover { border-color: rgb(255 236 220 / 0.3); }
+.form-control:focus {
+  background: var(--ink-950);
+  color: var(--text);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgb(227 185 78 / 0.22);
+}
+.form-control.is-invalid {
+  border-color: var(--bs-form-invalid-border-color);
+  background-image: none;
+  padding-right: 0.95rem;
+}
+.form-control.is-invalid:focus { box-shadow: 0 0 0 3px rgb(255 107 126 / 0.22); }
+
+.field-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 0;
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+  color: var(--bs-form-invalid-color);
+}
+.field-error:empty { margin: 0; }
+.field-error i { font-size: 1rem; margin-top: 0.15em; }
+
+.ticket-note {
+  margin: 14px 0 0;
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+/* ---------- Rodapé ---------- */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 32px 0;
+  background: var(--ink-950);
+}
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+/* ==========================================================================
+   OBRIGADO
+   ========================================================================== */
+.thanks {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--header-h) + 40px) 0 0;
+  overflow: hidden;
+  isolation: isolate;
+  flex-direction: column;
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgb(255 236 210 / 0.07), transparent 60%),
+    var(--ink-950);
+}
+.thanks .container { flex: 1; display: flex; align-items: center; }
+
+.thanks-title {
+  font-size: clamp(2.5rem, 1.3rem + 3.6vw, 4.4rem);
+  font-weight: 800;
+  font-stretch: 108%;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  margin-bottom: 20px;
+}
+.thanks-title span {
+  color: var(--text);
+  font-style: italic;
+  font-weight: 700;
+  display: inline-block;
+  padding-bottom: 0.06em;
+}
+.thanks-lead {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 44ch;
+  margin-bottom: 28px;
+}
+
+.ticket--stamped {
+  max-width: 460px;
+  margin-left: auto;
+}
+.ticket--stamped .ticket-main { display: flex; flex-direction: column; gap: 14px; }
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.95rem;
+}
+.ticket-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.ticket-row dt { color: var(--text-faint); font-weight: 500; }
+.ticket-row dd { margin: 0; font-weight: 650; text-align: right; }
+
+.thanks .seats { align-self: stretch; }
+
+.stamp {
+  align-self: flex-start;
+  margin-bottom: 4px;
+  padding: 6px 12px;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  font-weight: 800;
+  font-stretch: 118%;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  rotate: -8deg;
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   Movimento
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  /* O único momento de entrada: a projeção acende com cintilação.
+     Parte de um quadro visível (só brilho muda), nunca de opacidade zero. */
+  .screen-frame img { animation: projetor 1.6s var(--ease-out) both; }
+
+  .stamp { animation: carimbo 0.5s var(--ease-out) 0.5s backwards; }
+}
+
+@keyframes projetor {
+  0% { filter: brightness(0.45) saturate(0.6) contrast(1.04); }
+  10% { filter: brightness(0.9) saturate(0.8) contrast(1.04); }
+  16% { filter: brightness(0.5) saturate(0.7) contrast(1.04); }
+  24% { filter: brightness(1.05) saturate(0.9) contrast(1.04); }
+  30% { filter: brightness(0.75) saturate(0.9) contrast(1.04); }
+  100% { filter: brightness(1) saturate(1.05) contrast(1.04); }
+}
+@keyframes carimbo {
+  from { scale: 1.5; }
+  to { scale: 1; }
+}
+
+/* ==========================================================================
+   Responsivo
+   ========================================================================== */
+@media (max-width: 991.98px) {
+  .hero-copy .col-lg-4 { max-width: 40rem; }
+  .ticket--stamped { margin: 40px auto 0 0; }
+}
+
+@media (max-width: 767.98px) {
+  .navbar-collapse {
+    background: rgb(12 10 11 / 0.97);
+    margin: 10px -12px 0;
+    padding: 8px 12px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header:has(.navbar-collapse.show),
+  .site-header:has(.navbar-collapse.collapsing) { background: rgb(12 10 11 / 0.97); }
+  .nav-link { padding: 12px 4px !important; font-size: 1.05rem; }
+  .nav-link.nav-cta { margin: 8px 0 0; text-align: center; padding: 12px !important; }
+
+  .hero { padding-top: calc(var(--header-h) + 12px); }
+  .screen { width: 100%; }
+  .screen-frame {
+    box-shadow: 0 0 0 6px #070606, 0 24px 60px -20px rgb(255 228 190 / 0.16);
+  }
+  .screen-caption { text-align: left; font-size: 0.8125rem; }
+  .hero-beam { display: none; }
+
+  .film {
+    grid-template-columns: 3.9rem minmax(0, 1fr);
+    gap: 4px 16px;
+  }
+  .film::before { font-size: 5.5rem; grid-row: span 2; }
+  .film-trailer {
+    grid-column: 2;
+    width: 100%;
+    max-width: 280px;
+    margin-top: 12px;
+  }
+
+  .bastidores { padding: 24px 20px 8px; }
+
+  /* ingresso: canhoto vai para o topo e a picotagem fica horizontal */
+  .ticket {
+    --stub: 96px;
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--stub) auto;
+    -webkit-mask:
+      radial-gradient(circle var(--notch) at 0 var(--stub), #0000 98%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--notch) at 100% var(--stub), #0000 98%, #000) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle var(--notch) at 0 var(--stub), #0000 98%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--notch) at 100% var(--stub), #0000 98%, #000) right / 51% 100% no-repeat;
+  }
+  .ticket-stub {
+    order: -1;
+    flex-direction: row;
+    gap: 12px;
+    border-radius: 10px 10px 0 0;
+  }
+  .ticket-stub::before {
+    left: calc(var(--notch) + 6px);
+    right: calc(var(--notch) + 6px);
+    top: auto;
+    bottom: 0;
+    border-left: 0;
+    border-bottom: 2px dashed rgb(12 10 11 / 0.55);
+  }
+  .stub-number { font-size: 4rem; }
+
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
